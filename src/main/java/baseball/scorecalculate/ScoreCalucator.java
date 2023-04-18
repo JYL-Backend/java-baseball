@@ -1,19 +1,21 @@
 package baseball.scorecalculate;
 
+import baseball.score.Score;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 public class ScoreCalucator implements ScoreCalculatable {
+    // TODO: 2023-04-18 Score 클래스 분리 
     @Override
     public String calculate(String number, String inputString) {
         if(number.equals(inputString)) {
             return String.format("%s스트라이크", number.length());
         }
 
-        int strikeCount = 0;
-        int ballCount = 0;
         Map<Character, Integer> indexMap = getIndexMap(number);
+        Score score = new Score();
 
         for(int i=0; i<inputString.length(); i++){
             char c = inputString.charAt(i);
@@ -21,28 +23,14 @@ public class ScoreCalucator implements ScoreCalculatable {
                 continue;
             }
             Integer findIndex = indexMap.get(c);
-            if(i == findIndex) { // 스트라이크
-                strikeCount++;
+            if(i == findIndex) {
+                score.increaseStrike();
                 continue;
             }
-            ballCount++; //볼
+            score.increaseBall();
         }
 
-        return getMessage(ballCount, strikeCount);
-    }
-
-    private String getMessage(int ballCount, int strikeCount) {
-        ArrayList<String> result = new ArrayList<>();
-        if(ballCount != 0){
-            result.add(String.format("%s볼", ballCount));
-        }
-        if(strikeCount != 0){
-            result.add(String.format("%s스트라이크", strikeCount));
-        }
-        if(result.size() == 0){
-            return "낫싱";
-        }
-        return String.join(" ",result);
+        return score.getGenerateScoreMessage();
     }
 
     private Map<Character, Integer> getIndexMap(String number) {

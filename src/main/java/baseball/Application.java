@@ -7,15 +7,17 @@ import baseball.random.Randomize;
 import baseball.scorecalculate.ScoreCalucator;
 import baseball.user.ComputerUser;
 import baseball.user.HumanUser;
+import baseball.validator.Validator;
 
 public class Application {
     public static void main(String[] args) {
-        // TODO: 프로그램 구현
-        Randomize randomize = new RandomNumberGenerator();
+        Randomize randomize = new RandomNumberGenerator(3);
         ManagableGame gameManager = new GameManager(
-                new HumanUser(randomize.getRandomNumber(3)),
-                new ComputerUser(randomize.getRandomNumber(3)),
-                new ScoreCalucator()
+                new HumanUser(randomize.getRandomNumber()),
+                new ComputerUser(randomize.getRandomNumber()),
+                new ScoreCalucator(),
+                new Validator(3),
+                randomize
         );
 
         gameManager.start();

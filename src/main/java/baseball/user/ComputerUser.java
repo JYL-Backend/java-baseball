@@ -7,6 +7,9 @@ public class ComputerUser implements User {
     public ComputerUser(String number) {
         this.number = number;
     }
+    public void changeNumber(String number){
+        this.number = number;
+    }
     @Override
     public String getNumber() {
         return number;

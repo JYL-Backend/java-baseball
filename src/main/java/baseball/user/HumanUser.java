@@ -1,21 +1,20 @@
 package baseball.user;
 
+import baseball.random.Randomize;
 import baseball.scorecalculate.ScoreCalculatable;
 
-public class HumanUser implements CanAttackUser {
+public class HumanUser implements User {
     String number;
 
     public HumanUser(String number) {
+        this.number = number;
+    }
+    public void changeNumber(String number){
         this.number = number;
     }
 
     @Override
     public String getNumber() {
         return number;
-    }
-
-    @Override
-    public String attack(User user, ScoreCalculatable scoreCalculator, String inputString) {
-        return scoreCalculator.calculate(user.getNumber(), inputString);
     }
 }

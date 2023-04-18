@@ -1,42 +1,56 @@
 package baseball.game;
 
+import baseball.random.Randomize;
 import baseball.scorecalculate.ScoreCalculatable;
-import baseball.user.CanAttackUser;
+import baseball.scorecalculate.ScoreCalucator;
+import baseball.user.ComputerUser;
+import baseball.user.HumanUser;
 import baseball.user.User;
+import baseball.validator.Validatable;
+import baseball.validator.Validator;
 import camp.nextstep.edu.missionutils.Console;
 
 public class GameManager implements ManagableGame {
-    private CanAttackUser user1;
+    private User user1;
     private User user2;
     private ScoreCalculatable scoreCalculatable;
-    public GameManager(CanAttackUser user1, User user2, ScoreCalculatable scoreCalculatable) {
+    private Validatable validatable;
+    private Randomize randomize;
+    public GameManager(HumanUser user1, ComputerUser user2, ScoreCalucator scoreCalculatable, Validator validator, Randomize randomize) {
         this.user1 = user1;
         this.user2 = user2;
         this.scoreCalculatable = scoreCalculatable;
-
+        this.validatable = validator;
+        this.randomize = randomize;
     }
-
     @Override
     public void start() {
         while (true){
-            System.out.println("숫자 야구 게임을 시작합니다");
-            while(true){
-                System.out.println("숫자를 입력해주세요 : ");
-                String resultMessage = user1.attack(user2, scoreCalculatable, Console.readLine());
-                System.out.println(resultMessage);
-                if(resultMessage.equals(String.format("%s스트라이크", user1.getNumber().length()))){
-                    break;
-                }
-            }
-            if(!endGameAndQuestionReplay()){
+            if(!play()){
                 break;
             }
+            user2.changeNumber(randomize.getRandomNumber());
         }
     }
 
+    private boolean play(){
+        System.out.println(GameMessage.START_NOW);
+        while(true){
+            System.out.println(GameMessage.PLEASE_ENTER_NUMBER);
+            String input = Console.readLine();
+            validatable.validate(user2.getNumber(),input);
+            String resultMessage = scoreCalculatable.calculate(user2.getNumber(), input);
+            System.out.println(resultMessage);
+            if(resultMessage.equals(String.format(GameMessage.CONVERSION_STRIKE.toString(), user1.getNumber().length()))){
+                break;
+            }
+        }
+        return endGameAndQuestionReplay();
+    }
+
     private boolean endGameAndQuestionReplay() {
-        System.out.println(String.format("%s개의 숫자를 모두 맞히셨습니다! 게임 종료", user1.getNumber().length()));
-        System.out.println("게임을 새로 시작하려면 1, 종료하려면 2를 입력하세요.");
+        System.out.println(String.format(GameMessage.CONVERSION_GAME_END.toString(), user1.getNumber().length()));
+        System.out.println(GameMessage.PLEASE_SELECT_RESTART);
         String input = Console.readLine();
         if(input.equals("1")){
             return true;

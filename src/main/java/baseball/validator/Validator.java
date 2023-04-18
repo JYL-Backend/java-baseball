@@ -1,23 +1,20 @@
 package baseball.validator;
 
 public class Validator implements Validatable {
+    int size;
+    public Validator(int size) {
+        this.size = size;
+    }
+
     @Override
     public void validate(String number, String input) {
-        if(number == null || input == null){
+        try {
+            Integer.parseInt(input);
+            Integer.parseInt(number);
+        } catch (Exception ex){
             throw new IllegalArgumentException();
         }
-        if(number.length() == 0 || input.length() == 0){
-            throw new IllegalArgumentException();
-        }
-        if(number.length() != input.length()){
-            throw new IllegalArgumentException();
-        }
-        String regex = "^[0-9]+$";
-
-        if (!number.matches(regex)){
-            throw new IllegalArgumentException();
-        }
-        if (!input.matches(regex)){
+        if(number.length() != input.length() || input.length() != size){
             throw new IllegalArgumentException();
         }
     }
